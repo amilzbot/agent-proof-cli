@@ -61,13 +61,13 @@ Agents can:
     },
     {
       "name": "Phase 2: Credential & Schema",
-      "status": "pending",
+      "status": "done",
       "tasks": [
-        { "id": "2.1", "task": "Create AGENT-PROOF credential on devnet", "status": "pending" },
-        { "id": "2.2", "task": "Define AGENT-ID-V1 schema layout", "status": "pending" },
-        { "id": "2.3", "task": "Create schema on devnet", "status": "pending" },
-        { "id": "2.4", "task": "Tokenize schema (create collection)", "status": "pending" },
-        { "id": "2.5", "task": "Document PDAs and addresses", "status": "pending" }
+        { "id": "2.1", "task": "Create AGENT-PROOF credential on devnet", "status": "done" },
+        { "id": "2.2", "task": "Define AGENT-ID-V1 schema layout", "status": "done" },
+        { "id": "2.3", "task": "Create schema on devnet", "status": "done" },
+        { "id": "2.4", "task": "Tokenize schema (create collection)", "status": "done" },
+        { "id": "2.5", "task": "Document PDAs and addresses", "status": "done" }
       ]
     },
     {
@@ -135,9 +135,10 @@ Agents can:
     }
   ],
   "addresses": {
-    "credential": null,
-    "schema": null,
-    "schemaMint": null,
+    "credential": "Gk1T6Fw8FmRz4Gd5dHnBgKRbPfBb8yTxRAnGe9vmG9ei",
+    "schema": "6TPGn6rpWNkkg33hyFDH8rhFDfZxtmr9pXbzYSU93TtT",
+    "schemaMint": "J8HgYgt4sUVUpfaqPXyFjwtCpy3YGiyEZ41v1DS2ubwJ",
+    "authority": "BiE2BPxEDuVjwyKTZU2A5KTyE6MnngvLvRPmzYUYrVL4",
     "network": "devnet"
   },
   "metadata": {
@@ -156,6 +157,10 @@ Agents can:
 - Studied SAS tokenized attestation flow
 - **Phase 1 Complete**: Set up TypeScript project with @solana/kit + sas-lib
 - CLI structure: `create`, `verify`, `list` commands (stubs)
+- **Phase 2 Complete**: Deployed credential + schema to devnet
+  - Credential: `Gk1T6Fw8FmRz4Gd5dHnBgKRbPfBb8yTxRAnGe9vmG9ei`
+  - Schema: `6TPGn6rpWNkkg33hyFDH8rhFDfZxtmr9pXbzYSU93TtT`
+  - Collection Mint: `J8HgYgt4sUVUpfaqPXyFjwtCpy3YGiyEZ41v1DS2ubwJ`
 
 ---
 

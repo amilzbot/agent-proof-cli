@@ -24,10 +24,10 @@ export const CONFIG = {
   SCHEMA_FIELDS: ["agent_name", "proof_hash", "model_id"],
   SCHEMA_DESCRIPTION: "Agent identity proof schema - verifiable AI agent existence",
   
-  // Addresses (populated after deployment)
-  CREDENTIAL_ADDRESS: null as Address | null,
-  SCHEMA_ADDRESS: null as Address | null,
-  SCHEMA_MINT_ADDRESS: null as Address | null,
+  // Addresses (deployed to devnet 2026-02-02)
+  CREDENTIAL_ADDRESS: "Gk1T6Fw8FmRz4Gd5dHnBgKRbPfBb8yTxRAnGe9vmG9ei" as Address,
+  SCHEMA_ADDRESS: "6TPGn6rpWNkkg33hyFDH8rhFDfZxtmr9pXbzYSU93TtT" as Address,
+  SCHEMA_MINT_ADDRESS: "J8HgYgt4sUVUpfaqPXyFjwtCpy3YGiyEZ41v1DS2ubwJ" as Address,
   
   // Token metadata defaults
   TOKEN_SYMBOL: "AGENTID",
