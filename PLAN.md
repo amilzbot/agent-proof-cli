@@ -72,13 +72,13 @@ Agents can:
     },
     {
       "name": "Phase 3: CLI - Create Proof",
-      "status": "pending",
+      "status": "done",
       "tasks": [
-        { "id": "3.1", "task": "Implement 'create' command structure", "status": "pending" },
-        { "id": "3.2", "task": "Add claim text hashing (SHA256)", "status": "pending" },
-        { "id": "3.3", "task": "Build attestation data serialization", "status": "pending" },
-        { "id": "3.4", "task": "Implement tokenized attestation creation", "status": "pending" },
-        { "id": "3.5", "task": "Add transaction confirmation + output", "status": "pending" }
+        { "id": "3.1", "task": "Implement 'create' command structure", "status": "done" },
+        { "id": "3.2", "task": "Add claim text hashing (SHA256)", "status": "done" },
+        { "id": "3.3", "task": "Build attestation data serialization", "status": "done" },
+        { "id": "3.4", "task": "Implement tokenized attestation creation", "status": "done" },
+        { "id": "3.5", "task": "Add transaction confirmation + output", "status": "done" }
       ]
     },
     {
@@ -161,6 +161,10 @@ Agents can:
   - Credential: `Gk1T6Fw8FmRz4Gd5dHnBgKRbPfBb8yTxRAnGe9vmG9ei`
   - Schema: `6TPGn6rpWNkkg33hyFDH8rhFDfZxtmr9pXbzYSU93TtT`
   - Collection Mint: `J8HgYgt4sUVUpfaqPXyFjwtCpy3YGiyEZ41v1DS2ubwJ`
+- **Phase 3 Complete**: Implemented `create` command
+  - Minted Nix's first proof! 🎉
+  - Attestation: `FW6EhQUNGmodV1LZEfihkwTZxybACQuB4a1pTR1mv2QQ`
+  - NFT Mint: `8aWgvtzMVRkvCcgq1jaekqhWanHQX1GexP2AXmErNzaW`
 
 ---
 
