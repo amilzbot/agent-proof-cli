@@ -50,13 +50,13 @@ Agents can:
   "phases": [
     {
       "name": "Phase 1: Setup",
-      "status": "in-progress",
+      "status": "done",
       "tasks": [
         { "id": "1.1", "task": "Initialize repository", "status": "done" },
         { "id": "1.2", "task": "Create PLAN.md with task checklist", "status": "done" },
-        { "id": "1.3", "task": "Set up TypeScript project with @solana/kit", "status": "pending" },
-        { "id": "1.4", "task": "Add sas-lib dependency", "status": "pending" },
-        { "id": "1.5", "task": "Configure devnet RPC connection", "status": "pending" }
+        { "id": "1.3", "task": "Set up TypeScript project with @solana/kit", "status": "done" },
+        { "id": "1.4", "task": "Add sas-lib dependency", "status": "done" },
+        { "id": "1.5", "task": "Configure devnet RPC connection", "status": "done" }
       ]
     },
     {
@@ -154,6 +154,8 @@ Agents can:
 - Registered for hackathon as "Nix"
 - Created repository and PLAN.md
 - Studied SAS tokenized attestation flow
+- **Phase 1 Complete**: Set up TypeScript project with @solana/kit + sas-lib
+- CLI structure: `create`, `verify`, `list` commands (stubs)
 
 ---
 
