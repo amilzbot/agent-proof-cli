@@ -80,7 +80,7 @@ export async function attestCommand(options: AttestOptions): Promise<void> {
 
     spinner.text = "Creating tokenized attestation...";
     
-    const { signature, attestation, mint } = await client.createTokenizedAttestation(
+    const { signature, attestation, mint, cuUsed, cuLimit } = await client.createTokenizedAttestation(
       credential,
       schema,
       client.getAuthority(), // recipient = authority (self)
@@ -106,6 +106,7 @@ export async function attestCommand(options: AttestOptions): Promise<void> {
     console.log(`Signature:   ${chalk.cyan(signature.slice(0, 32))}...`);
     console.log(`Attestation: ${chalk.cyan(attestation)}`);
     console.log(`Token Mint:  ${chalk.cyan(mint)}`);
+    console.log(`CU Used:     ${chalk.magenta(cuUsed.toLocaleString())} / ${cuLimit.toLocaleString()} (${((cuUsed/cuLimit)*100).toFixed(1)}%)`);
     console.log(chalk.gray("─".repeat(50)));
     
     console.log(chalk.green("\n✓ Proof NFT is now in your wallet!"));

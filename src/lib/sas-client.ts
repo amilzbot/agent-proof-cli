@@ -49,6 +49,10 @@ import {
   ASSOCIATED_TOKEN_PROGRAM_ADDRESS,
 } from "@solana-program/token-2022";
 
+import {
+  getSetComputeUnitLimitInstruction,
+} from "@solana-program/compute-budget";
+
 export { SOLANA_ATTESTATION_SERVICE_PROGRAM_ADDRESS as SAS_PROGRAM_ID };
 
 export interface SASClientConfig {
@@ -139,7 +143,7 @@ export class SASClient {
   /**
    * Create a credential (authority to issue attestations)
    */
-  async createCredential(config: CredentialConfig): Promise<{ signature: string; credential: Address }> {
+  async createCredential(config: CredentialConfig): Promise<{ signature: string; credential: Address; cuUsed: number; cuLimit: number }> {
     const credential = await this.deriveCredentialAddress(config.name);
     
     const ix = getCreateCredentialInstruction({
@@ -150,14 +154,14 @@ export class SASClient {
       signers: config.signers || [this.signer.address],
     });
 
-    const signature = await this.sendTransaction([ix]);
-    return { signature, credential };
+    const result = await this.sendTransaction([ix]);
+    return { ...result, credential };
   }
 
   /**
    * Create a schema (defines attestation structure)
    */
-  async createSchema(config: SchemaConfig): Promise<{ signature: string; schema: Address }> {
+  async createSchema(config: SchemaConfig): Promise<{ signature: string; schema: Address; cuUsed: number; cuLimit: number }> {
     const credential = await this.deriveCredentialAddress(config.credentialName);
     const schema = await this.deriveSchemaAddress(credential, config.name, config.version ?? 1);
     
@@ -172,14 +176,14 @@ export class SASClient {
       fieldNames: config.fieldNames,
     });
 
-    const signature = await this.sendTransaction([ix]);
-    return { signature, schema };
+    const result = await this.sendTransaction([ix]);
+    return { ...result, schema };
   }
 
   /**
    * Tokenize a schema (enable NFT-backed attestations)
    */
-  async tokenizeSchema(credential: Address, schema: Address): Promise<{ signature: string; mint: Address }> {
+  async tokenizeSchema(credential: Address, schema: Address): Promise<{ signature: string; mint: Address; cuUsed: number; cuLimit: number }> {
     const [mint] = await deriveSchemaMintPda({ schema });
     const sasPda = await deriveSasAuthorityAddress();
     
@@ -203,8 +207,8 @@ export class SASClient {
       tokenProgram: TOKEN_2022_PROGRAM_ADDRESS,
     });
 
-    const signature = await this.sendTransaction([ix]);
-    return { signature, mint };
+    const result = await this.sendTransaction([ix]);
+    return { ...result, mint };
   }
 
   /**
@@ -220,7 +224,7 @@ export class SASClient {
     tokenSymbol: string,
     tokenUri: string,
     expiryDays = 365,
-  ): Promise<{ signature: string; attestation: Address; mint: Address }> {
+  ): Promise<{ signature: string; attestation: Address; mint: Address; cuUsed: number; cuLimit: number }> {
     const attestation = await this.deriveAttestationAddress(credential, schema, nonce);
     const [attestationMint] = await deriveAttestationMintPda({ attestation });
     const [schemaMint] = await deriveSchemaMintPda({ schema });
@@ -297,8 +301,8 @@ export class SASClient {
       tokenProgram: TOKEN_2022_PROGRAM_ADDRESS,
     });
 
-    const signature = await this.sendTransaction([ix]);
-    return { signature, attestation, mint: attestationMint };
+    const result = await this.sendTransaction([ix]);
+    return { ...result, attestation, mint: attestationMint };
   }
 
   /**
@@ -320,22 +324,50 @@ export class SASClient {
   }
 
   /**
-   * Send and confirm a transaction
+   * Send and confirm a transaction with CU estimation
    */
-  private async sendTransaction(instructions: IInstruction[]): Promise<string> {
+  private async sendTransaction(instructions: IInstruction[]): Promise<{ signature: string; cuUsed: number; cuLimit: number }> {
     const { value: latestBlockhash } = await this.rpc.getLatestBlockhash().send();
     
-    const message = pipe(
+    // Build transaction for simulation (without CU limit)
+    const simMessage = pipe(
       createTransactionMessage({ version: 0 }),
       tx => setTransactionMessageFeePayer(this.signer.address, tx),
       tx => setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, tx),
       tx => appendTransactionMessageInstructions(instructions, tx),
     );
+    
+    // Sign for simulation
+    const simTx = await signTransactionMessageWithSigners(simMessage);
+    
+    // Simulate to get actual CU usage
+    const simResult = await this.rpc.simulateTransaction(simTx, {
+      commitment: "confirmed",
+      replaceRecentBlockhash: true,
+    }).send();
+    
+    // Extract CU consumed and add 10% buffer
+    const cuConsumed = Number(simResult.value.unitsConsumed ?? 200_000);
+    const cuLimit = Math.ceil(cuConsumed * 1.1);
+    
+    // Build final transaction with optimized CU limit
+    const cuLimitIx = getSetComputeUnitLimitInstruction({ units: cuLimit });
+    
+    const finalMessage = pipe(
+      createTransactionMessage({ version: 0 }),
+      tx => setTransactionMessageFeePayer(this.signer.address, tx),
+      tx => setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, tx),
+      tx => appendTransactionMessageInstructions([cuLimitIx, ...instructions], tx),
+    );
 
-    const signedTx = await signTransactionMessageWithSigners(message);
+    const signedTx = await signTransactionMessageWithSigners(finalMessage);
     await this.sendAndConfirm(signedTx, { commitment: "confirmed" });
     
-    return getSignatureFromTransaction(signedTx);
+    return {
+      signature: getSignatureFromTransaction(signedTx),
+      cuUsed: cuConsumed,
+      cuLimit,
+    };
   }
 }
 

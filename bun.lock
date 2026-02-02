@@ -5,6 +5,7 @@
     "": {
       "name": "agent-proof-cli",
       "dependencies": {
+        "@solana-program/compute-budget": "^0.12.0",
         "@solana-program/token-2022": "^0.4.1",
         "@solana/kit": "^2.1.0",
         "chalk": "^5.3.0",
@@ -19,6 +20,8 @@
     },
   },
   "packages": {
+    "@solana-program/compute-budget": ["@solana-program/compute-budget@0.12.0", "", { "peerDependencies": { "@solana/kit": "^5.0" } }, "sha512-ysHNVfctUyuY9+mHzJqt97en9ly2quR4n1pvJMQjYf4olwoCqB7+E9b+XZmlj91lFQuAs5z48aw5qDekg78DbQ=="],
+
     "@solana-program/token-2022": ["@solana-program/token-2022@0.4.2", "", { "peerDependencies": { "@solana/kit": "^2.1.0", "@solana/sysvars": "^2.1.0" } }, "sha512-zIpR5t4s9qEU3hZKupzIBxJ6nUV5/UVyIT400tu9vT1HMs5JHxaTTsb5GUhYjiiTvNwU0MQavbwc4Dl29L0Xvw=="],
 
     "@solana/accounts": ["@solana/accounts@2.3.0", "", { "dependencies": { "@solana/addresses": "2.3.0", "@solana/codecs-core": "2.3.0", "@solana/codecs-strings": "2.3.0", "@solana/errors": "2.3.0", "@solana/rpc-spec": "2.3.0", "@solana/rpc-types": "2.3.0" }, "peerDependencies": { "typescript": ">=5.3.3" } }, "sha512-QgQTj404Z6PXNOyzaOpSzjgMOuGwG8vC66jSDB+3zHaRcEPRVRd2sVSrd1U6sHtnV3aiaS6YyDuPQMheg4K2jw=="],

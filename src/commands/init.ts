@@ -68,17 +68,19 @@ export async function initCommand(options: InitOptions): Promise<void> {
     }
 
     const credentialName = `agent-proof-${options.name}`;
+    let totalCuUsed = 0;
     
     // Step 1: Create Credential
     spinner.text = "Creating credential...";
-    const { signature: credSig, credential } = await client.createCredential({
+    const { signature: credSig, credential, cuUsed: credCu } = await client.createCredential({
       name: credentialName,
     });
-    console.log(chalk.green(`\n✓ Credential: ${credSig.slice(0, 16)}...`));
+    totalCuUsed += credCu;
+    console.log(chalk.green(`\n✓ Credential: ${credSig.slice(0, 16)}...`) + chalk.gray(` (${credCu.toLocaleString()} CU)`));
     
     // Step 2: Create Schema
     spinner.text = "Creating schema...";
-    const { signature: schemaSig, schema } = await client.createSchema({
+    const { signature: schemaSig, schema, cuUsed: schemaCu } = await client.createSchema({
       credentialName,
       name: AGENT_SCHEMA_NAME,
       description: AGENT_SCHEMA_DESCRIPTION,
@@ -86,12 +88,14 @@ export async function initCommand(options: InitOptions): Promise<void> {
       fieldNames: AGENT_SCHEMA_FIELD_NAMES,
       version: AGENT_SCHEMA_VERSION,
     });
-    console.log(chalk.green(`✓ Schema: ${schemaSig.slice(0, 16)}...`));
+    totalCuUsed += schemaCu;
+    console.log(chalk.green(`✓ Schema: ${schemaSig.slice(0, 16)}...`) + chalk.gray(` (${schemaCu.toLocaleString()} CU)`));
     
     // Step 3: Tokenize Schema
     spinner.text = "Tokenizing schema...";
-    const { signature: tokenSig, mint } = await client.tokenizeSchema(credential, schema);
-    console.log(chalk.green(`✓ Tokenized: ${tokenSig.slice(0, 16)}...`));
+    const { signature: tokenSig, mint, cuUsed: tokenCu } = await client.tokenizeSchema(credential, schema);
+    totalCuUsed += tokenCu;
+    console.log(chalk.green(`✓ Tokenized: ${tokenSig.slice(0, 16)}...`) + chalk.gray(` (${tokenCu.toLocaleString()} CU)`));
 
     spinner.succeed("Initialization complete!");
     
@@ -106,6 +110,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
     console.log(`Credential:  ${chalk.cyan(credential)}`);
     console.log(`Schema:      ${chalk.cyan(schema)}`);
     console.log(`Schema Mint: ${chalk.cyan(mint)}`);
+    console.log(`Total CU:    ${chalk.magenta(totalCuUsed.toLocaleString())} (3 txns)`);
     console.log(chalk.gray("─".repeat(50)));
     
     console.log(chalk.green("\n✓ Ready to create attestations!"));
